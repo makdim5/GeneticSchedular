@@ -6,11 +6,10 @@ from deap import tools
 import random
 import numpy
 
-import matplotlib.pyplot as plt
 import seaborn as sns
 
-import elitism
-import nurses
+from genetic_scheduler.genetic_logic.elitism import eaSimpleWithElitism
+from genetic_scheduler.genetic_logic.nurses import NurseSchedulingProblem
 
 # problem constants:
 HARD_CONSTRAINT_PENALTY = 10  # the penalty factor for a hard-constraint violation
@@ -29,7 +28,7 @@ random.seed(RANDOM_SEED)
 toolbox = base.Toolbox()
 
 # create the nurse scheduling problem instance to be used:
-nsp = nurses.NurseSchedulingProblem(HARD_CONSTRAINT_PENALTY)
+nsp = NurseSchedulingProblem(HARD_CONSTRAINT_PENALTY)
 
 # define a single objective, maximizing fitness strategy:
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -75,8 +74,8 @@ def main():
     hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
 
     # perform the Genetic Algorithm flow with hof feature added:
-    population, logbook = elitism.eaSimpleWithElitism(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATION,
-                                              ngen=MAX_GENERATIONS, stats=stats, halloffame=hof, verbose=True)
+    population, logbook = eaSimpleWithElitism(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATION,
+                                                      ngen=MAX_GENERATIONS, stats=stats, halloffame=hof, verbose=True)
 
     # print best solution found:
     best = hof.items[0]
@@ -86,18 +85,22 @@ def main():
     print("-- Schedule = ")
     nsp.printScheduleInfo(best)
 
+
+
     # extract statistics:
     minFitnessValues, meanFitnessValues = logbook.select("min", "avg")
 
     # plot statistics:
     sns.set_style("whitegrid")
-    plt.plot(minFitnessValues, color='red')
-    plt.plot(meanFitnessValues, color='green')
-    plt.xlabel('Generation')
-    plt.ylabel('Min / Average Fitness')
-    plt.title('Min and Average fitness over Generations')
-    plt.show()
+    # plt.plot(minFitnessValues, color='red')
+    # plt.plot(meanFitnessValues, color='green')
+    # plt.xlabel('Generation')
+    # plt.ylabel('Min / Average Fitness')
+    # plt.title('Min and Average fitness over Generations')
+    # plt.show()
+
+    return nsp.getJSONSchedule(best)
 
 
 if __name__ == "__main__":
-    main()
+    print(main())

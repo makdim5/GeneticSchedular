@@ -8,3 +8,28 @@ __pycache__/
 # Datasource local storage ignored files
 .idea/dataSources/
 .idea/dataSources.local.xml
+
+.env
+
+# dependencies
+/scheduler_ui/node_modules
+scheduler_ui/.pnp
+.pnp.js
+scheduler_ui/.idea/
+
+# testing
+scheduler_ui/coverage
+
+# production
+scheduler_ui/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

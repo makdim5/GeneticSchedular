@@ -152,6 +152,35 @@ class NurseSchedulingProblem:
 
         return violations
 
+    def getJSONSchedule(self, schedule):
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+        nurseShiftsDict = self.getNurseShifts(schedule)
+
+        data = []
+        index = 0
+        for item in days:
+            d = dict()
+            d["weekday"] = item
+            d['day'] = []
+            d['evening'] = []
+            d['night'] = []
+            for nurse in nurseShiftsDict:  # all shifts of a single nurse
+                if nurseShiftsDict[nurse][index] == 1:
+                    d["day"].append(nurse)
+                elif nurseShiftsDict[nurse][index + 1] == 1:
+                    d["evening"].append(nurse)
+                elif nurseShiftsDict[nurse][index + 2] == 1:
+                    d["night"].append(nurse)
+            index += 3
+            data.append({"day": d["weekday"], "events": [
+                {"names": d["day"], "data_start": "08:10", "data_end": "14:00"},
+                {"names": d["evening"], "data_start": "14:10", "data_end": "21:00"},
+                {"names": d["night"], "data_start": "21:10", "data_end": "23:00"}
+            ]})
+
+        return data
+
     def printScheduleInfo(self, schedule):
         """
         Prints the schedule and violations details
